@@ -8,7 +8,10 @@ export const Sidebar = ({ title }) => {
     <>
       {sections.map((section) => {
         return (
-          <Paper>
+          <Paper
+            key={section}
+            style={{ padding: "1rem", marginBottom: "1rem" }}
+          >
             <Typography variant="h5" gutterBottom>
               {section}
               {new Array(4).fill("").map((_, index) => {

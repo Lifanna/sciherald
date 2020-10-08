@@ -29,7 +29,7 @@ export function Article({ title, description }) {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardActions style={{ marginLeft: "15px" }}>
         <ThumbUpIcon fontSize="small" />
         <CommentIcon fontSize="small" />
       </CardActions>
