@@ -1,1 +1,1 @@
-web: python sciherald/manage.py runserver
+web: gunicorn sciherald.wsgi --log-file -
