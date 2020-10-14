@@ -14,7 +14,7 @@ def index(request):
         '/v1/get-articles': 'Method to get all articles',
     }
     context = {'info': info}
-    return render(request, 'index.html', context)
+    return render(request, 'api/index.html', context)
 
 def version(request, version_id):
     if version_id != 1:
