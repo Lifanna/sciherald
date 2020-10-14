@@ -1,1 +1,1 @@
-web: gunicorn sciherald/sciherald/wsgi --log-file -
+web: gunicorn --chdir /sciherald wsgi --log-file -
