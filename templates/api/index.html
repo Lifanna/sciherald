@@ -1,0 +1,10 @@
+{% if info %}
+There is information about possible Sciherald API methods:
+    <ul>
+    {% for key, value in info.items %}
+        <li>{{ key }} : {{ value }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No info is available.</p>
+{% endif %}
