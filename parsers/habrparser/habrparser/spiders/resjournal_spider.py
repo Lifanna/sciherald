@@ -30,9 +30,9 @@ class ResJournalSpider(scrapy.Spider):
 
     def parse_category(self, response):
         articles = response.css("div.post.entry.clearfix.latest")
-        next_page_exists = response.css("div.pagination.clearfix > div.alignleft >  a::text").extract_first()
+        next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
         while next_page_exists is not None:
-            next_page_exists = response.css("div.pagination.clearfix > div.alignleft >  a::text").extract_first()
+            next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
             i=0
             for article in articles:
                 i += 1
@@ -57,6 +57,14 @@ class ResJournalSpider(scrapy.Spider):
         article_date = ' '. join(article_date)
 
         print("AAAAAAAAABAAAAAAAAAAAAAAA      ", article_date)
+
+        # подготовка данных для добавления в БД
+        item = HabrparserItem()
+        # item['title']
+
+
+        # добавление в БД
+        yield item
 
         # array = ['ya', 'tut', 'privet', 'kakdela']
         # array = ' '.join(array)
