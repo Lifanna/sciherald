@@ -4,9 +4,19 @@ import "./index.css";
 import "fontsource-roboto";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

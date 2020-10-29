@@ -14,6 +14,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -80,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function Header() {
+  const {push} = useHistory()
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -173,7 +175,7 @@ export function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography style={{cursor: 'pointer'}} onClick={() => push('/')} className={classes.title} variant="h6" noWrap>
             Новости
           </Typography>
           <div className={classes.search}>
