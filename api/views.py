@@ -28,72 +28,10 @@ def getArticles(request, version_id):
     if version_id != 1:
         raise Http404('Unknown version of api')
 
-    q1 = Article(
-        id = 1,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q1.save()
+    objects = Article.objects.order_by('id')
+    data = serializers.serialize('json', objects)
 
-    q2 = Article(
-        id = 2,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q2.save()
-
-    q3 = Article(
-        id = 3,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q3.save()
-
-    q4 = Article(
-        id = 4,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q4.save()
-
-    q5 = Article(
-        id = 5,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q5.save()
-
-    q6 = Article(
-        id = 6,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q6.save()
-
-    data = json.dumps(list(Article.objects.values()), ensure_ascii=False, cls=DjangoJSONEncoder)
+    print('OBJECCCCCTSSSSSSSSSSSSS     = = = = = ', objects)
+    print('DATAAAAAAAAAAAAAAAAAAAAA     = = = = = ', data)
 
     return HttpResponse(data, content_type='application/json')

@@ -1,9 +1,19 @@
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
 class Article(models.Model):
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     content = models.TextField()
     author = models.CharField(max_length=255)
-    publication_date = models.DateField()
-    category = models.CharField(max_length=255)
-    referer_url = models.CharField(max_length=255)
+    date = models.CharField(max_length=255)
+    parsed_date = models.CharField(max_length=255)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+    source = models.CharField(max_length=255)
+
+class Image(models.Model):
+    article = models.ForeignKey("Article", on_delete=models.CASCADE)
+    path = models.ImageField("Изображение", upload_to="articles_images", blank=True, null=True)
+    original_path = models.TextField("Исходный путь изображения")
+    position = models.IntegerField("Порядок")
