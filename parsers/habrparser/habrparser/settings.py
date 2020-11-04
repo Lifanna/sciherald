@@ -86,3 +86,21 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# create table articles (
+# 	id serial primary key,
+# 	title varchar,
+# 	text text,
+# 	date varchar(100),
+# 	category varchar(100)
+# )
+
+ITEM_PIPELINES = {
+    'habrparser.pipelines.HabrparserPipeline': 300,
+    # 'scrapy.pipelines.images.ImagesPipeline': 1
+}
+
+# IMAGES_STORE = 'C:/DjangoSites/sciherald/parsers/habrparser/aaaaaaa'
+
+# FILES_URLS_FIELD = 'images'
+# FILES_RESULT_FIELD = 'path'

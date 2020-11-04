@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sciherald.apps.sciherald_app'
+    'sciherald_app',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -50,9 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'sciherald.urls'
-
-print("FFFF:    ", os.path.join(BASE_DIR,'templates/'))
+ROOT_URLCONF = 'sciherald_app.urls'
 
 TEMPLATES = [
     {
@@ -70,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sciherald.wsgi.application'
+WSGI_APPLICATION = 'sciherald_app.wsgi.application'
 
 
 # Database
@@ -79,7 +78,7 @@ WSGI_APPLICATION = 'sciherald.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'sciheralddb.sqlite3'),
     }
 }
 
@@ -121,3 +120,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+import django_heroku
+django_heroku.settings(locals())

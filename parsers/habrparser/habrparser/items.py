@@ -4,9 +4,17 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from scrapy.item import Item, Field
 
 
-class HabrparserItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class HabrparserItem(Item):
+    name = Field()
+    category = Field()
+    content = Field()
+    author = Field()
+    date = Field()
+    parsed_date = Field()
+    source = Field()
+    original_link = Field()
+    article = Field()
+    images = Field()
