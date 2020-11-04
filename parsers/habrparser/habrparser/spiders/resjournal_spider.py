@@ -54,7 +54,7 @@ class ResJournalSpider(scrapy.Spider):
         article_date = article_block.css("p.meta-info a::text")[2].extract()
         article_date = article_date.split(' ')
         del article_date[0]
-        article_date = ' '. join(article_date)
+        article_date = ' '.join(article_date)
 
         print("AAAAAAAAABAAAAAAAAAAAAAAA      ", article_date)
 
