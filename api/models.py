@@ -17,9 +17,3 @@ class Image(models.Model):
     path = models.ImageField("Изображение", upload_to="articles_images", blank=True, null=True)
     original_path = models.TextField("Исходный путь изображения")
     position = models.IntegerField("Порядок")
-
-class Article(models.Model):
-     title = models.CharField(max_length=255)
-     content = models.TextField()
-     img = models.ImageField(upload_to='/article', 
-                      height_field=100, width_field=100)
