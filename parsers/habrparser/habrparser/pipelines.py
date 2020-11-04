@@ -42,16 +42,18 @@ class ArticlesTable(Base):
     author = Column(String)
     date = Column(String)
     parsed_date = Column(String)
-    source = Column(String)
+    source_id = Column(Integer, ForeignKey("api_sources.id"))
+    original_link = Column(String)
 
-    def __init__(self, name, category, content, author, date, parsed_date, source):
+    def __init__(self, name, category_id, content, author, date, parsed_date, source_id, original_link):
         self.name = name
-        self.category = category
+        self.category_id = category_id
         self.content = content
         self.author = author
         self.date = date
         self.parsed_date = parsed_date
-        self.source = source
+        self.source_id = source_id
+        self.original_link = original_link
 
     def __repr__(self):
         return "<Article %s, %s, %s, %s, %s, %s, %s>" % (self.name, self.category, self.content, self.author, self.date, self.parsed_date, self.source)
@@ -96,13 +98,12 @@ class HabrparserPipeline(object):
         else:
             instance = model(**kwargs)
             session.add(instance)
+            session.flush()
             session.commit()
             return instance, True
 
     def process_item(self, item, spider):
         category, exists = self.get_or_create(CategoriesTable, name=item['category'])
-
-        print("ИИИИИИИИИИИЖ              ", category.id)
 
         articles_table = ArticlesTable(
             item['name'],
@@ -111,29 +112,35 @@ class HabrparserPipeline(object):
             item['author'],
             item['date'],
             item['parsed_date'],
-            item['source']
+            item['source'],
+            item['original_link'],
         )
 
         self.session.add(articles_table)
-        self.session.flush()
-        print("ПОСЛЕДНИЙ ИДЕНТИФИКАТОР СТАТЬИ:                ", articles_table.id)
+        self.session.commit()
 
-        for position, image_path in item['images'].items():
-            article_id = articles_table.id
-            path = '/articles_images/%s/'%(article_id)
-            images_table = ImagesTable(
-                article_id,
-                path,
-                image_path,
-                position,
-            )
+        # delete from api_image;
+        # delete from api_article;
+        # delete from api_category;
 
-            self.session.add(images_table)
+        if isinstance(item['images'], dict) and item['images'] != {}:
+            for position, image_path in item['images'].items():
+                article_id = articles_table.id
+                path = '/articles_images/%s/'%(article_id)
+                images_table = ImagesTable(
+                    article_id,
+                    path,
+                    image_path,
+                    position,
+                )
+
+                self.session.add(images_table)
+                self.session.commit()
 
         return item
 
     def close_spider(self, spider):
-        self.session.commit()
+        # self.session.commit()
         self.session.close()
 
     def open_spider(self, spider):

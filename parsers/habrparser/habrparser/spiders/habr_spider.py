@@ -1,6 +1,10 @@
 import scrapy, w3lib
 from ..items import HabrparserItem
 from datetime import datetime
+import time, re, os
+from ..pipelines import ArticlesTable
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 class HabrSpider(scrapy.Spider):
     name = "habr"
@@ -10,6 +14,13 @@ class HabrSpider(scrapy.Spider):
         urls = [
             'https://habr.com/ru/',
         ]
+
+        parser_inner_path = os.path.dirname(os.path.dirname(__file__))
+        parser_path = os.path.abspath(os.path.join(parser_inner_path, os.pardir))
+        database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
+        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:\DjangoSites\sciherald\\"), echo=False)
+        self.session = Session(bind=self.engine)
+        
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
@@ -22,10 +33,8 @@ class HabrSpider(scrapy.Spider):
         i = 0
         for category in response.css("ul.nav-links > li"):
             i += 1
-            if i == 1: 
+            if i == 1:
                 continue
-            elif i > 2:
-                break
 
             category_link = category.css('a::attr(href)').extract_first()
             category_name = category.css('a::text').extract_first()
@@ -39,20 +48,75 @@ class HabrSpider(scrapy.Spider):
             yield request
 
     def parse_category(self, response):
-        articles = response.css("li.content-list__item.content-list__item_post.shortcuts_item")
         item = response.meta['item']
 
-        i = 0
+        last_page_url = response.css("ul#nav-pagess > li")[-1]
+        last_page_url = last_page_url.css("a::attr(href)").extract_first()
+        print("ЛАСТ:                   ", last_page_url)
+
+        request = scrapy.Request(url="https://habr.com%s"%last_page_url, callback=self.go_to_last_page)
+        request.meta['item'] = item
+
+        yield request
+
+    def go_to_last_page(self, response):
+        item = response.meta['item']
+        page_exists = response.css("ul.arrows-pagination > li")
+
+        prev_page_url = page_exists[0].css("a#previous_page::attr(href)").extract_first()
+        total_pages = response.css("span.toggle-menu__item-link.toggle-menu__item-link_pagination.toggle-menu__item-link_active::text").extract_first()
+
+        for page in reversed(range(0, int(total_pages))):
+            print("FIRST:                     ", prev_page_url)
+            # prev_page_url = page_exists[0].css("a#previous_page::attr(href)").extract_first()
+
+            next_page_request = scrapy.Request(url="https://habr.com%s"%prev_page_url, callback=self.parse_each_page)
+            next_page_request.meta['item'] = item
+
+            # page_exists = response.css("ul.arrows-pagination > li").extract()
+            # prev_page_url = page_exists[0].css("a#previous_page::attr(href)").extract_first()
+            # print("EXISTS:                  ", page_exists)
+
+            time.sleep(2)
+
+            yield next_page_request
+
+            prev_page_url = re.sub(r'page\d+', 'page%s'%page, prev_page_url)
+
+            # print("ЗАМЕНИЛИ:                ", prev_page_url)
+
+    def parse_each_page(self, response):
+        item = response.meta['item']
+
+        articles = response.css("li.content-list__item.content-list__item_post.shortcuts_item")
+
+        from sqlalchemy.sql.expression import func
+        article = self.session.query(ArticlesTable).with_entities(ArticlesTable.original_link).\
+            filter((ArticlesTable.source_id == 3)).\
+            order_by(ArticlesTable.id).first()
+
+        print("EXIIIIIISTSSSSSSSSSSS:                 ", article)
+        last_article = article
+        """
+            SELECT original_link FROM api_article WHERE source_id = 3 ORDER BY id
+        """
+
+        articles.reverse()
+        is_new_article = False
+
         for article in articles:
             article_link = article.css("article h2.post__title > a::attr(href)").extract_first()
 
-            if i > 0:
-                break
+            if article_link == last_article and is_new_article == False:
+                is_new_article = True
+                continue
+            elif article_link != last_article and is_new_article == False:
+                continue
+            # elif 
 
             request = scrapy.Request(url=article_link, callback=self.parse_each_article)
             request.meta['item'] = item
 
-            i += 1
             yield request
 
     def parse_each_article(self, response):
@@ -80,7 +144,8 @@ class HabrSpider(scrapy.Spider):
         item['author'] = article_author
         item['date'] = article_date
         item['parsed_date'] = article_parsed_date
-        item['source'] = response.url
+        item['source'] = 3
+        item['original_link'] = response.url
         item['images'] = images
 
         yield item

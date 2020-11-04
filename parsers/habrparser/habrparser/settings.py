@@ -97,4 +97,10 @@ ROBOTSTXT_OBEY = True
 
 ITEM_PIPELINES = {
     'habrparser.pipelines.HabrparserPipeline': 300,
+    # 'scrapy.pipelines.images.ImagesPipeline': 1
 }
+
+# IMAGES_STORE = 'C:/DjangoSites/sciherald/parsers/habrparser/aaaaaaa'
+
+# FILES_URLS_FIELD = 'images'
+# FILES_RESULT_FIELD = 'path'

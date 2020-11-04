@@ -15,5 +15,6 @@ class HabrparserItem(Item):
     date = Field()
     parsed_date = Field()
     source = Field()
+    original_link = Field()
     article = Field()
     images = Field()

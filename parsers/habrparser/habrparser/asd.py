@@ -1,8 +1,7 @@
-class ArticlesTable:
-    def __init__(self):
-        print("constructor called!")
+import re
 
-    def do_something(self, number_a, number_b):
-        print(number_a + number_b)
+prev_page_url = "/ru/flows/develop/page1/"
 
-balzhan = ArticlesTable()
+prev_page_url = re.sub(r'page\d+', 'page100', prev_page_url)
+
+print(prev_page_url)
