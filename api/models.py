@@ -17,3 +17,9 @@ class Image(models.Model):
     path = models.ImageField("Изображение", upload_to="articles_images", blank=True, null=True)
     original_path = models.TextField("Исходный путь изображения")
     position = models.IntegerField("Порядок")
+
+class Link(models.Model):
+        article = models.ForeignKey("Article", on_delete=models.CASCADE)
+    path = models.ImageField("Изображение", upload_to="articles_images", blank=True, null=True)
+    original_path = models.TextField("Исходный путь изображения")
+    position = models.IntegerField("Порядок")
