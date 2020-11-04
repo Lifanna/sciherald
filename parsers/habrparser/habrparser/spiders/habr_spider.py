@@ -15,11 +15,11 @@ class HabrSpider(scrapy.Spider):
             'https://habr.com/ru/',
         ]
 
-        parser_inner_path = os.path.dirname(os.path.dirname(__file__))
-        parser_path = os.path.abspath(os.path.join(parser_inner_path, os.pardir))
-        database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
-        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:\DjangoSites\sciherald\\"), echo=False)
-        self.session = Session(bind=self.engine)
+        # parser_inner_path = os.path.dirname(os.path.dirname(__file__))
+        # parser_path = os.path.abspath(os.path.join(parser_inner_path, os.pardir))
+        # database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
+        # self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:\DjangoSites\sciherald\\"), echo=False)
+        # self.session = Session(bind=self.engine)
         
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -90,29 +90,17 @@ class HabrSpider(scrapy.Spider):
 
         articles = response.css("li.content-list__item.content-list__item_post.shortcuts_item")
 
-        from sqlalchemy.sql.expression import func
-        article = self.session.query(ArticlesTable).with_entities(ArticlesTable.original_link).\
-            filter((ArticlesTable.source_id == 3)).\
-            order_by(ArticlesTable.id).first()
+        # from sqlalchemy.sql.expression import func
+        # article = self.session.query(ArticlesTable).with_entities(ArticlesTable.original_link).\
+        #     filter((ArticlesTable.source_id == 3)).\
+        #     order_by(ArticlesTable.id).first()
 
-        print("EXIIIIIISTSSSSSSSSSSS:                 ", article)
-        last_article = article
         """
             SELECT original_link FROM api_article WHERE source_id = 3 ORDER BY id
         """
 
-        articles.reverse()
-        is_new_article = False
-
         for article in articles:
             article_link = article.css("article h2.post__title > a::attr(href)").extract_first()
-
-            if article_link == last_article and is_new_article == False:
-                is_new_article = True
-                continue
-            elif article_link != last_article and is_new_article == False:
-                continue
-            # elif 
 
             request = scrapy.Request(url=article_link, callback=self.parse_each_article)
             request.meta['item'] = item

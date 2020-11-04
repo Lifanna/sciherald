@@ -42,7 +42,7 @@ class ArticlesTable(Base):
     author = Column(String)
     date = Column(String)
     parsed_date = Column(String)
-    source_id = Column(Integer, ForeignKey("api_sources.id"))
+    source_id = Column(Integer, ForeignKey("api_source.id"))
     original_link = Column(String)
 
     def __init__(self, name, category_id, content, author, date, parsed_date, source_id, original_link):
@@ -85,7 +85,7 @@ class HabrparserPipeline(object):
         database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
         # database_path = database_path.replace('\\', '\\\\')
         # self.engine = create_engine("postgresql://postgres:cao95records@localhost:5432/sciheralddb", echo=False)
-        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%(database_path), echo=False)
+        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:\DjangoSites\sciherald\\"), echo=False)
         if not os.path.exists(basename):
             Base.metadata.create_all(self.engine)
 
