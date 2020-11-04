@@ -18,3 +18,16 @@ class HabrparserItem(Item):
     original_link = Field()
     article = Field()
     images = Field()
+
+
+class ResJournalparserItem(Item):
+    name = Field()
+    category = Field()
+    content = Field()
+    author = Field()
+    date = Field()
+    parsed_date = Field()
+    source = Field()
+    original_link = Field()
+    article = Field()
+    images = Field()

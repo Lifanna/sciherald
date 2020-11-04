@@ -33,6 +33,18 @@ class CategoriesTable(Base):
         return "<Category %s>" % (self.name)
 
 
+class SourcesTable(Base):
+    __tablename__ = 'api_source'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "<Category %s>" % (self.name)
+
+
 class ArticlesTable(Base):
     __tablename__ = 'api_article'
     id = Column(Integer, primary_key=True)
@@ -42,7 +54,7 @@ class ArticlesTable(Base):
     author = Column(String)
     date = Column(String)
     parsed_date = Column(String)
-    source_id = Column(Integer, ForeignKey("api_sources.id"))
+    source_id = Column(Integer, ForeignKey("api_source.id"))
     original_link = Column(String)
 
     def __init__(self, name, category_id, content, author, date, parsed_date, source_id, original_link):
@@ -85,7 +97,8 @@ class HabrparserPipeline(object):
         database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
         # database_path = database_path.replace('\\', '\\\\')
         # self.engine = create_engine("postgresql://postgres:cao95records@localhost:5432/sciheralddb", echo=False)
-        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%(database_path), echo=False)
+        print('AAAAAAAAAAAAAAAAAAAAAA                  ', database_path)
+        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:/Users/User/DjangoSites/sciherald//"), echo=False)
         if not os.path.exists(basename):
             Base.metadata.create_all(self.engine)
 
@@ -104,6 +117,7 @@ class HabrparserPipeline(object):
 
     def process_item(self, item, spider):
         category, exists = self.get_or_create(CategoriesTable, name=item['category'])
+        print('RRRRRRRRRRRRRRRRRRRRRRRR      ', category.name)
 
         articles_table = ArticlesTable(
             item['name'],
@@ -115,6 +129,7 @@ class HabrparserPipeline(object):
             item['source'],
             item['original_link'],
         )
+        print('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH   ')
 
         self.session.add(articles_table)
         self.session.commit()

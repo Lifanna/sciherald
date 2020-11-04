@@ -1,4 +1,6 @@
 import scrapy
+from datetime import datetime
+from ..items import HabrparserItem
 
 
 class ResJournalSpider(scrapy.Spider):
@@ -18,8 +20,16 @@ class ResJournalSpider(scrapy.Spider):
             i += 1
             if i > 1:
                 break
+            category_link = category.css("a::attr(href)").extract_first()
+            category_name = category.css("a::text").extract_first()
+
+            item = HabrparserItem()
+            item['category'] = category_name
+
+            request = scrapy.Request(url=category_link, callback=self.parse_category)
+            request.meta['item'] = item        
             # print("AAAAAAAAA: ",category.css("a::attr(href)").extract()[0])
-            yield scrapy.Request(url=category.css("a::attr(href)").extract()[0],callback=self.parse_category)
+            yield request
         
         # for category in response.css(".nav-links"):
             # yield{
@@ -29,6 +39,7 @@ class ResJournalSpider(scrapy.Spider):
             # print("CATEGORY::::::       ", category.css('li').extract())
 
     def parse_category(self, response):
+        item = response.meta['item']
         articles = response.css("div.post.entry.clearfix.latest")
         next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
         while next_page_exists is not None:
@@ -39,12 +50,15 @@ class ResJournalSpider(scrapy.Spider):
                 if i>1:
                     break
                 # print("ya tut           ", article.css("h3.title > a::attr(href)").extract())
-                yield scrapy.Request(url=article.css("h3.title > a::attr(href)").extract()[0],callback=self.parse_each_article)
-        
+                request = scrapy.Request(url=article.css("h3.title > a::attr(href)").extract_first(), callback=self.parse_each_article)
+                request.meta['item'] = item
+
+                yield request
 
         # print("YAAAAAAAAAAAAAAAAAAA    ", response.css("div.pagination.clearfix > div.alignleft >  a::text").extract_first())
 
     def parse_each_article(self, response):
+        item = response.meta['item']
         article_block = response.css("div.entry.post.clearfix")
         # print("ya tut           ", article_block.css("h1.title::text").extract_first())
         article_title = article_block.css("h1.title::text").extract_first()
@@ -55,14 +69,24 @@ class ResJournalSpider(scrapy.Spider):
         article_date = article_date.split(' ')
         del article_date[0]
         article_date = ' '.join(article_date)
+        article_parsed_date = datetime.now()
+        article_author = response.css("meta[name = 'citation_author']::attr(content)").extract_first()
+        original_link = response.url
 
-        print("AAAAAAAAABAAAAAAAAAAAAAAA      ", article_date)
+        print("AAAAAAAAABAAAAAAAAAAAAAAA      ", original_link)
 
         # подготовка данных для добавления в БД
-        item = HabrparserItem()
-        # item['title']
-
-
+        
+       
+        item['name'] = article_title
+        
+        item['content'] = article_text
+        item['author'] = article_author
+        item['date'] = article_date
+        item['parsed_date'] = article_parsed_date
+        item['source'] = 2
+        item['original_link'] = original_link
+        item['images'] = {}
         # добавление в БД
         yield item
 
