@@ -6,7 +6,7 @@ const sections = ["Недавние публикаций", "Топ статей"
 export const Sidebar = ({ title }) => {
   return (
     <>
-      {sections.map((section) => {
+      {sections.map(section => {
         return (
           <Paper
             key={section}
@@ -16,7 +16,10 @@ export const Sidebar = ({ title }) => {
               {section}
               {new Array(4).fill("").map((_, index) => {
                 return (
-                  <Typography variant={"h6"}>{`News ${index}`}</Typography>
+                  <Typography
+                    key={index}
+                    variant={"h6"}
+                  >{`News ${index}`}</Typography>
                 );
               })}
             </Typography>
