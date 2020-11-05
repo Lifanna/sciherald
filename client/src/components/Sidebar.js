@@ -12,17 +12,15 @@ export const Sidebar = ({ title }) => {
             key={section}
             style={{ padding: "1rem", marginBottom: "1rem" }}
           >
-            <Typography variant="h5" gutterBottom>
-              {section}
-              {new Array(4).fill("").map((_, index) => {
-                return (
-                  <Typography
-                    key={index}
-                    variant={"h6"}
-                  >{`News ${index}`}</Typography>
-                );
-              })}
-            </Typography>
+            {section}
+            {new Array(4).fill("").map((_, index) => {
+              return (
+                <Typography
+                  key={index}
+                  variant={"h6"}
+                >{`News ${index}`}</Typography>
+              );
+            })}
           </Paper>
         );
       })}

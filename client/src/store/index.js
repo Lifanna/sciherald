@@ -1,4 +1,4 @@
-import { articleListSlice } from "./articleList";
+import { articleListSlice, articlesLoadRequestAction } from "./articleList";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./saga";
@@ -18,3 +18,5 @@ export const store = configureStore({
 });
 
 sagaMiddleware.run(rootSaga);
+
+store.dispatch(articlesLoadRequestAction());

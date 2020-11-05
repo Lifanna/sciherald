@@ -11,17 +11,18 @@ import { useHistory } from "react-router-dom";
 const useStyles = makeStyles({
   root: {
     marginBottom: "1rem",
+    width: "100%",
   },
 });
 
 export function Article({ title, description, id }) {
   const classes = useStyles();
-  const {push} = useHistory()
+  const { push } = useHistory();
   return (
     <Card className={classes.root}>
       <CardActionArea>
         <CardContent onClick={() => push(`/articles/${id}`)}>
-          <Typography  gutterBottom variant="h5" component="h2">
+          <Typography gutterBottom variant="h5" component="h2">
             {title}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
