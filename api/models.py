@@ -9,7 +9,7 @@ class Article(models.Model):
     author = models.CharField(max_length=255)
     date = models.CharField(max_length=255)
     parsed_date = models.CharField(max_length=255)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     source = models.CharField(max_length=255)
 
 class Image(models.Model):

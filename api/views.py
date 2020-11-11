@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.http import Http404
 from django.shortcuts import render
-from api.models import Article
+from api.models import Article, Category
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 import datetime
@@ -44,5 +44,12 @@ def get_article_by_id(request, version_id, id):
 
     print('OBJ     = = = = = ', objects)
     print('DAT     = = = = = ', data)
+
+    return HttpResponse(data, content_type='application/json')
+
+def get_article_by_category(request, version_id, id):
+    categoryArticles = Article.objects.filter(category=id)
+
+    data = serializers.serialize('json', categoryArticles)
 
     return HttpResponse(data, content_type='application/json')
