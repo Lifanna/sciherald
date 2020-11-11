@@ -35,3 +35,14 @@ def getArticles(request, version_id):
     print('DATAAAAAAAAAAAAAAAAAAAAA     = = = = = ', data)
 
     return HttpResponse(data, content_type='application/json')
+
+
+def get_article_by_id(request, version_id, id):
+
+    objects = Article.objects.get(pk=id)
+    data = serializers.serialize('json', [objects])
+
+    print('OBJ     = = = = = ', objects)
+    print('DAT     = = = = = ', data)
+
+    return HttpResponse(data, content_type='application/json')
