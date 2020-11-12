@@ -1,4 +1,4 @@
-import { call, put, spawn, delay, takeEvery, all } from "redux-saga/effects";
+import { put, spawn, delay, takeEvery, all } from "redux-saga/effects";
 import {
   articlesErrorAction,
   articlesLoadAction,
@@ -17,7 +17,7 @@ export function* fetchArticlesSaga() {
     // const articles = res.data;
     // yield put(articlesLoadAction(featuredPosts));
 
-    yield delay(1000);
+    yield delay(3000);
 
     if (true) {
       yield put(articlesLoadAction(featuredPosts));

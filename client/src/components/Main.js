@@ -5,9 +5,7 @@ import { ArticlePage } from "../pages/ArticlePage";
 import { HomePage } from "../pages/HomePage";
 import { Sidebar } from "./Sidebar";
 
-
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     marginTop: "1rem",
   },
@@ -20,14 +18,12 @@ export const Main = () => {
       <Grid container spacing={3}>
         <Grid item xs={8}>
           <Switch>
-          <Route path="/articles/:id" exact>
-          <ArticlePage/>
-            
-          </Route>
-          <Route path="/" exact>
-          <HomePage/>
-            
-          </Route>
+            <Route path="/articles/:id" exact>
+              <ArticlePage />
+            </Route>
+            <Route path="/" exact>
+              <HomePage />
+            </Route>
           </Switch>
         </Grid>
         <Grid item xs={4}>
