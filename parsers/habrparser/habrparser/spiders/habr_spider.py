@@ -1,5 +1,5 @@
 import scrapy, w3lib
-from ..items import HabrparserItem
+from ..items import HabrparserItem, ImageItem
 from datetime import datetime
 import time, re, os
 from ..pipelines import ArticlesTable
@@ -52,7 +52,7 @@ class HabrSpider(scrapy.Spider):
 
         last_page_url = response.css("ul#nav-pagess > li")[-1]
         last_page_url = last_page_url.css("a::attr(href)").extract_first()
-        print("ЛАСТ:                   ", last_page_url)
+        # print("ЛАСТ:                   ", last_page_url)
 
         request = scrapy.Request(url="https://habr.com%s"%last_page_url, callback=self.go_to_last_page)
         request.meta['item'] = item
@@ -67,44 +67,35 @@ class HabrSpider(scrapy.Spider):
         total_pages = response.css("span.toggle-menu__item-link.toggle-menu__item-link_pagination.toggle-menu__item-link_active::text").extract_first()
 
         for page in reversed(range(0, int(total_pages))):
-            print("FIRST:                     ", prev_page_url)
-            # prev_page_url = page_exists[0].css("a#previous_page::attr(href)").extract_first()
-
             next_page_request = scrapy.Request(url="https://habr.com%s"%prev_page_url, callback=self.parse_each_page)
             next_page_request.meta['item'] = item
-
-            # page_exists = response.css("ul.arrows-pagination > li").extract()
-            # prev_page_url = page_exists[0].css("a#previous_page::attr(href)").extract_first()
-            # print("EXISTS:                  ", page_exists)
-
-            time.sleep(2)
 
             yield next_page_request
 
             prev_page_url = re.sub(r'page\d+', 'page%s'%page, prev_page_url)
-
-            # print("ЗАМЕНИЛИ:                ", prev_page_url)
 
     def parse_each_page(self, response):
         item = response.meta['item']
 
         articles = response.css("li.content-list__item.content-list__item_post.shortcuts_item")
 
-        # from sqlalchemy.sql.expression import func
-        # article = self.session.query(ArticlesTable).with_entities(ArticlesTable.original_link).\
-        #     filter((ArticlesTable.source_id == 3)).\
-        #     order_by(ArticlesTable.id).first()
-
         """
             SELECT original_link FROM api_article WHERE source_id = 3 ORDER BY id
         """
 
+        i = 0
         for article in articles:
             article_link = article.css("article h2.post__title > a::attr(href)").extract_first()
+
+            if article_link == None:
+                continue
 
             request = scrapy.Request(url=article_link, callback=self.parse_each_article)
             request.meta['item'] = item
 
+            # if i > 0:
+            #     break
+            # i += 1
             yield request
 
     def parse_each_article(self, response):
@@ -114,18 +105,24 @@ class HabrSpider(scrapy.Spider):
         article_name = response.css("article.post.post_full h1.post__title.post__title_full span::text").extract_first()
         article_content_block = response.css("div.post__body.post__body_full > div#post-content-body")
         article_content = article_content_block.extract_first()
-        article_content = w3lib.html.remove_tags(article_content)
+
+        # article_content = w3lib.html.remove_tags(article_content)
         article_parsed_date = datetime.now()
         article_author = response.css("a.post__user-info.user-info span::text").extract_first()
 
         article_images = response.css("div.post__body.post__body_full > div#post-content-body img::attr(src)")
 
         images = {}
+        images_list = []
 
         position = 0
         for image in article_images:
-            images[position] = image.extract()
-            position += 1
+            image_url = image.extract()
+            if image_url in article_content:
+                article_content = article_content.replace('<img src="%s" alt="image">'%image_url, '~~%s~~'%position)
+                images[position] = image_url
+                position += 1
+                images_list.append(image.extract())
 
         item['name'] = article_name
         item['content'] = article_content
@@ -135,5 +132,6 @@ class HabrSpider(scrapy.Spider):
         item['source'] = 3
         item['original_link'] = response.url
         item['images'] = images
+        item['image_urls'] = images_list
 
         yield item
