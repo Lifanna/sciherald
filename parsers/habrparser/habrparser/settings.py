@@ -44,15 +44,15 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'habrparser.middlewares.HabrparserSpiderMiddleware': 543,
-#}
+SPIDER_MIDDLEWARES = {
+   'habrparser.middlewares.HabrparserSpiderMiddleware': 543,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'habrparser.middlewares.HabrparserDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'habrparser.middlewares.HabrparserDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -97,4 +97,12 @@ ROBOTSTXT_OBEY = True
 
 ITEM_PIPELINES = {
     'habrparser.pipelines.HabrparserPipeline': 300,
+   #  'habrparser.pipelines.MyImagesPipeline': 400
 }
+
+IMAGES_STORE = 'C:/DjangoSites/sciherald/staticfiles/images'
+
+MEDIA_ALLOW_REDIRECTS = True
+
+# FILES_URLS_FIELD = 'image_urls'
+# FILES_RESULT_FIELD = 'path'
