@@ -7,8 +7,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 import datetime
 import json
 
-from rest_framework import generics
-
 def index(request):
     info = {
         '/api': 'Main page of Sciherald Backend API',
