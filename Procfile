@@ -1,0 +1,1 @@
+web: gunicorn sciherald.wsgi --log-file -

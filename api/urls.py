@@ -1,0 +1,9 @@
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('v<int:version_id>', views.version, name='version'),
+    path('v<int:version_id>/get-articles', views.getArticles, name='getArticles')
+]
