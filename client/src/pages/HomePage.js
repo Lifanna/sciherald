@@ -4,10 +4,11 @@ import { useSelector } from "react-redux";
 import { Article } from "../components/Article";
 
 export const HomePage = () => {
-  const { articles, isLoading, error } = useSelector(
-    state => state.articleList
-  );
-
+  const { articles, error, isLoading } = useSelector(state => ({
+    articles: state.articleList.articles,
+    error: state.articleList.errors.articles,
+    isLoading: state.articleList.loadings.articles,
+  }));
   const circular = isLoading && <CircularProgress size={100} />;
   const articlesJSX =
     !isLoading &&
@@ -15,9 +16,9 @@ export const HomePage = () => {
     articles.map((post, id) => {
       return (
         <Article
-          id={id}
+          id={post.id}
           title={post.title}
-          description={post.description}
+          description={post.body.slice(0, 100)}
           key={post.title}
         />
       );

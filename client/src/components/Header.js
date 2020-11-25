@@ -14,9 +14,10 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
@@ -81,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function Header() {
-  const {push} = useHistory()
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -89,7 +89,7 @@ export function Header() {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -102,7 +102,7 @@ export function Header() {
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event) => {
+  const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
@@ -175,9 +175,10 @@ export function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography style={{cursor: 'pointer'}} onClick={() => push('/')} className={classes.title} variant="h6" noWrap>
+
+          <Button component={NavLink} to="/">
             Новости
-          </Typography>
+          </Button>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
