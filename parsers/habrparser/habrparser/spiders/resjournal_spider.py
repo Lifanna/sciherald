@@ -42,18 +42,44 @@ class ResJournalSpider(scrapy.Spider):
         item = response.meta['item']
         articles = response.css("div.post.entry.clearfix.latest")
         next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
-        while next_page_exists is not None:
-            next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
-            i=0
-            for article in articles:
-                i += 1
-                if i>1:
-                    break
-                # print("ya tut           ", article.css("h3.title > a::attr(href)").extract())
-                request = scrapy.Request(url=article.css("h3.title > a::attr(href)").extract_first(), callback=self.parse_each_article)
-                request.meta['item'] = item
+        next_page_url = response.css("div.pagination.clearfix > div.alignleft > a::attr(href)").extract_first()
+        next_page_exists = response.css("div.pagination.clearfix > div.alignleft > a::text").extract_first()
+        
+        i=0
+        for article in articles:
+            i += 1
+            # if i>1:
+            #     break
+            # print("ya tut           ", article.css("h3.title > a::attr(href)").extract())
+            request = scrapy.Request(url=article.css("h3.title > a::attr(href)").extract_first(), callback=self.parse_each_article)
+            request.meta['item'] = item
 
-                yield request
+            yield request
+
+        if next_page_exists is None:
+            return
+
+        print("AAAAAAAAAAAAAAAAAAAAA           ", next_page_url)
+
+        request = scrapy.Request(url=next_page_url, callback=self.parse_category)
+        request.meta['item'] = item
+
+        yield request
+
+    # def parse_articles_list(self, response):
+    #     item = response.meta['item']
+    #     articles = response.css("div.post.entry.clearfix.latest")
+        
+    #     i=0
+    #     for article in articles:
+    #         i += 1
+    #         if i>1:
+    #             break
+    #         print("ya tut           ", article.css("h3.title > a::attr(href)").extract())
+    #         request = scrapy.Request(url=article.css("h3.title > a::attr(href)").extract_first(), callback=self.parse_each_article)
+    #         request.meta['item'] = item
+
+    #             yield request
 
         # print("YAAAAAAAAAAAAAAAAAAA    ", response.css("div.pagination.clearfix > div.alignleft >  a::text").extract_first())
 
@@ -73,7 +99,29 @@ class ResJournalSpider(scrapy.Spider):
         article_author = response.css("meta[name = 'citation_author']::attr(content)").extract_first()
         original_link = response.url
 
-        print("AAAAAAAAABAAAAAAAAAAAAAAA      ", original_link)
+        article_images = response.css("div.entry.post.clearfix img::attr(src)")
+
+        images = {}
+        images_list = []
+        print("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR      ", article_block)
+
+        position = 0
+        for image in article_images:
+            image_url = image.extract()
+            # print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU        ", image_url)
+            if image_url in article_block.extract_first():
+                # article_block = article_block.replace('<img src="%s" alt="image">'%image_url, '~~%s~~'%position)
+                images[position] = image_url
+                position += 1
+                images_list.append(image.extract())
+
+        # print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU        ", images)   
+        # attach 'sciher.sqlite3' as db3;
+# attach 'sciheralddb.sqlite3' as db2;
+
+# INSERT INTO db3.api_article SELECT * FROM db2.api_article;     
+
+        
 
         # подготовка данных для добавления в БД
         
