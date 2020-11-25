@@ -7,7 +7,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import CommentIcon from "@material-ui/icons/Comment";
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
 const useStyles = makeStyles({
   root: {
     marginBottom: "1rem",
@@ -21,10 +22,10 @@ export function Article({ title, description, id }) {
   return (
     <Card className={classes.root}>
       <CardActionArea>
-        <CardContent onClick={() => push(`/articles/${id}`)}>
-          <Typography gutterBottom variant="h5" component="h2">
+        <CardContent>
+          <Button component={NavLink} to={`/articles/${id}`}>
             {title}
-          </Typography>
+          </Button>
           <Typography variant="body2" color="textSecondary" component="p">
             {description}
           </Typography>

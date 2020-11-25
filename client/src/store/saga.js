@@ -1,36 +1,44 @@
-import { put, spawn, delay, takeEvery, all } from "redux-saga/effects";
+import { put, spawn, takeEvery, all, call } from "redux-saga/effects";
 import {
   articlesErrorAction,
   articlesLoadAction,
   articlesRequestAction,
   articlesLoadRequestAction,
+  articleLoadAction,
+  articleErrorAction,
+  articleLoadRequestAction,
+  articleRequestAction,
 } from "./articleList";
-import axios from "axios";
-import { featuredPosts } from "../constants";
+import { getArticleById, getArticles } from "../services/api-service";
 
 export function* fetchArticlesSaga() {
   yield put(articlesRequestAction());
   try {
-    // const res = yield call(
-    //   axios.get("https://sciherald.herokuapp.com/api/v1/get-articles")
-    // );
-    // const articles = res.data;
-    // yield put(articlesLoadAction(featuredPosts));
+    const articles = yield call(getArticles);
 
-    yield delay(3000);
-
-    if (true) {
-      yield put(articlesLoadAction(featuredPosts));
-    } else {
-      yield put(articlesErrorAction("Ошибка"));
-    }
+    articles.forEach(item => (item.title = item.title.toUpperCase()));
+    yield put(articlesLoadAction(articles));
   } catch (error) {
-    yield put(articlesErrorAction(error.message));
+    yield put(articlesErrorAction({ type: "articles" }));
+  }
+}
+
+export function* fetchArticle({ payload }) {
+  yield put(articleRequestAction());
+  try {
+    const article = yield call(getArticleById, payload);
+
+    yield put(articleLoadAction(article));
+  } catch (error) {
+    yield put(articleErrorAction(error.message));
   }
 }
 
 export const artilcleListSaga = function* () {
-  yield all([takeEvery(articlesLoadRequestAction.type, fetchArticlesSaga), ,]);
+  yield all([
+    takeEvery(articlesLoadRequestAction.type, fetchArticlesSaga),
+    takeEvery(articleLoadRequestAction.type, fetchArticle),
+  ]);
 };
 
 export default function* () {

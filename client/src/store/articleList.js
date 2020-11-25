@@ -2,33 +2,57 @@ import { createAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   articles: [],
-  error: null,
-  isLoading: false,
+  currentArticle: null,
+  errors: {
+    articles: null,
+    currentArticle: null,
+  },
+  loadings: {
+    articles: false,
+    currentArticle: false,
+  },
 };
 
 export const articleListSlice = createSlice({
   name: "articleList",
   initialState,
   reducers: {
-    articlesRequest(state) {
-      state.isLoading = true;
+    articlesRequest(state, action) {
+      const { type } = action.payload;
+      state.loadings[type] = true;
     },
     articlesLoad(state, action) {
-      state.articles = action.payload;
-      state.error = null;
-      state.isLoading = false;
+      const { type, data } = action.payload;
+      state[type] = data;
+      state.errors[type] = null;
+      state.loadings[type] = false;
     },
     articlesError(state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
+      const { type, data } = action.payload;
+      state.loadings[type] = false;
+      state.errors[type] = data;
     },
   },
 });
 
-export const articlesLoadRequestAction = createAction("FETCH_ARTICLES_REQUEST");
-
-export const {
-  articlesRequest: articlesRequestAction,
-  articlesLoad: articlesLoadAction,
-  articlesError: articlesErrorAction,
+const {
+  articlesRequest,
+  articlesLoad,
+  articlesError,
 } = articleListSlice.actions;
+
+export const articlesRequestAction = () =>
+  articlesRequest({ type: "articles" });
+export const articlesLoadAction = data =>
+  articlesLoad({ type: "articles", data });
+export const articlesErrorAction = () => articlesError({ type: "articles" });
+
+export const articleRequestAction = () =>
+  articlesRequest({ type: "currentArticle" });
+export const articleLoadAction = data =>
+  articlesLoad({ type: "currentArticle", data });
+export const articleErrorAction = () =>
+  articlesError({ type: "currentArticle" });
+
+export const articlesLoadRequestAction = createAction("FETCH_ARTICLES_REQUEST");
+export const articleLoadRequestAction = createAction("FETCH_ARTICLE_REQUEST");
