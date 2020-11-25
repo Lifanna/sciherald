@@ -10,6 +10,7 @@ django-heroku = "*"
 gunicorn = "*"
 django-cors-headers = "*"
 Scrapy = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"
