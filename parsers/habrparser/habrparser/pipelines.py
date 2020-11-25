@@ -104,11 +104,8 @@ class HabrparserPipeline(object):
         database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
         # database_path = database_path.replace('\\', '\\\\')
         # self.engine = create_engine("postgresql://postgres:cao95records@localhost:5432/sciheralddb", echo=False)
-<<<<<<< HEAD
-        self.engine = create_engine("sqlite:///../../db.sqlite3", echo=False)
-=======
+        # self.engine = create_engine("sqlite:///../../db.sqlite3", echo=False)
         self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:/DjangoSites/sciherald/"), echo=False)
->>>>>>> e7ed4a8277c742743c9ea7a3cdc4028ad41ebae7
         if not os.path.exists(basename):
             Base.metadata.create_all(self.engine)
 
