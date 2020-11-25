@@ -16,7 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.orm import Session
 import os
-from items import HabrparserItem
+from .items import HabrparserItem
 from scrapy.exceptions import DropItem
 
 from scrapy.pipelines.images import ImagesPipeline
