@@ -1,8 +1,8 @@
 import scrapy, w3lib
-from items import HabrparserItem, ImageItem
+from ..items import HabrparserItem, ImageItem
 from datetime import datetime
 import time, re, os
-from pipelines import ArticlesTable
+from ..pipelines import ArticlesTable
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
