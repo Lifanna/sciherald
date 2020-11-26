@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 # from .models_moodle import MdlGradeItems
-from .models import Article, Image
+from .models import Article, Image, Category
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +24,9 @@ class ArticleSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
+        fields = '__all__'
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = '__all__'

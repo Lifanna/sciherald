@@ -12,7 +12,6 @@ class Source(models.Model):
     name = models.CharField("Название источника", max_length = 100, unique=True)
 
 class Article(models.Model):
-<<<<<<< HEAD
     name = models.CharField(max_length=255)
     content = models.TextField()
     author = models.CharField(max_length=255)
@@ -21,17 +20,6 @@ class Article(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, null=True)
     original_link = models.CharField("Источник статьи", max_length=255, null=False, blank=False, default="")
-=======
-    name = models.CharField("Название статьи", max_length = 100, null=False, default="")
-    category = models.ForeignKey("api.Category", on_delete=models.SET_NULL, null=True)
-    content = models.TextField("Содержание статьи", null=False, blank=False)
-    author = models.CharField("Автор статьи", max_length=100)
-    date = models.DateField("Дата публикации статьи", null=True, blank=True)
-    parsed_date = models.DateField("Дата разбора с сайта", null=True, blank=True)
-    source = models.ForeignKey("api.Source", on_delete=models.SET_NULL, null=True)
-    original_link = models.CharField("Источник статьи", max_length=255, null=False, blank=False, default="")
-
->>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e
 
 class Image(models.Model):
     article = models.ForeignKey("api.Article", on_delete=models.CASCADE)

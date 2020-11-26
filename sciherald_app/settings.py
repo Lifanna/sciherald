@@ -38,15 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD:sciherald/settings.py
     'sciherald.apps.sciherald_app',
     'rest_framework',
     'api',
-=======
-    'sciherald_app',
-    'api',
-    'corsheaders'
->>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e:sciherald_app/settings.py
 ]
 
 MIDDLEWARE = [
