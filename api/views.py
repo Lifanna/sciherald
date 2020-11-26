@@ -87,6 +87,7 @@ def get_article_by_category(request, version_id, id):
     data = serializers.serialize('json', categoryArticles)
 
     return HttpResponse(data, content_type='application/json')
+<<<<<<< HEAD
 
 @api_view(['GET'])
 def get_images_by_article(request, version_id, article_id):
@@ -96,3 +97,5 @@ def get_images_by_article(request, version_id, article_id):
     serializer = serializers.ImageSerializer(images, many=True)
 
     return Response(serializer.data)
+=======
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e

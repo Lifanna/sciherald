@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,9 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD:sciherald/settings.py
     'sciherald.apps.sciherald_app',
     'rest_framework',
     'api',
+=======
+    'sciherald_app',
+    'api',
+    'corsheaders'
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e:sciherald_app/settings.py
 ]
 
 MIDDLEWARE = [
@@ -50,11 +57,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'sciherald.urls'
-
-print("FFFF:    ", os.path.join(BASE_DIR,'templates/'))
+ROOT_URLCONF = 'sciherald_app.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sciherald.wsgi.application'
+WSGI_APPLICATION = 'sciherald_app.wsgi.application'
 
 
 # Database
@@ -130,5 +136,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# import django_heroku
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
+
+CORS_ALLOW_ALL_ORIGINS = True

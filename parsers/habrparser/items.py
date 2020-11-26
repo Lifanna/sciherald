@@ -38,4 +38,8 @@ class ResJournalparserItem(Item):
     source = Field()
     original_link = Field()
     article = Field()
+<<<<<<< HEAD
     images = Field()
+=======
+    images = Field()
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e

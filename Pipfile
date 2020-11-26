@@ -8,6 +8,10 @@ verify_ssl = true
 [packages]
 django-heroku = "*"
 gunicorn = "*"
+django-cors-headers = "*"
+Scrapy = "*"
+sqlalchemy = "*"
+Pillow = "*"
 
 [requires]
 python_version = "3.8"

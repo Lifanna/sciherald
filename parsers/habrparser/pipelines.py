@@ -16,7 +16,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.orm import Session
 import os
+<<<<<<< HEAD
 from habrparser.items import HabrparserItem
+=======
+from .items import HabrparserItem
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e
 from scrapy.exceptions import DropItem
 
 from scrapy.pipelines.images import ImagesPipeline
@@ -104,7 +108,12 @@ class HabrparserPipeline(object):
         database_path = os.path.abspath(os.path.join(parser_path, os.pardir))
         # database_path = database_path.replace('\\', '\\\\')
         # self.engine = create_engine("postgresql://postgres:cao95records@localhost:5432/sciheralddb", echo=False)
+<<<<<<< HEAD
         self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("../sciherald"), echo=False)
+=======
+        # self.engine = create_engine("sqlite:///../../db.sqlite3", echo=False)
+        self.engine = create_engine("sqlite:///%s\sciheralddb.sqlite3"%("C:/DjangoSites/sciherald/"), echo=False)
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e
         if not os.path.exists(basename):
             Base.metadata.create_all(self.engine)
 
@@ -233,4 +242,8 @@ class HabrparserPipeline(object):
     #             result['path'] = target_path
     #             item['images_path'].append(result)
 
+<<<<<<< HEAD
     #     return item
+=======
+    #     return item
+>>>>>>> 86d1c7eee857fb0babd0008ef98353c136c0bf0e
