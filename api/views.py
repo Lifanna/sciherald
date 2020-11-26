@@ -1,11 +1,18 @@
 from django.http import JsonResponse, HttpResponse
 from django.http import Http404
 from django.shortcuts import render
-from api.models import Article, Category
+from api.models import Article, Category, Image
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 import datetime
 import json
+
+from rest_framework import generics
+
+from . import serializers
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 def index(request):
     info = {
@@ -24,11 +31,30 @@ def version(request, version_id):
         'info': 'version of api is v1'
     })
 
-def getArticles(request, version_id):
-    if version_id != 1:
-        raise Http404('Unknown version of api')
 
-    objects = Article.objects.order_by('id')
+@api_view(['GET'])
+def getArticles(request, version_id):
+    print('fffffffffffffffffffffffffffff')
+    serializer = serializers.ArticleSerializer(Article.objects.all()[:10], many=True)
+    
+    return Response(serializer.data)
+
+# def getArticles(request, version_id):
+#     if version_id != 1:
+#         raise Http404('Unknown version of api')
+
+#     objects = Article.objects.order_by('id')[:10]
+    
+#     #print('OBJECCCCCTSSSSSSSSSSSSS     = = = = = ', objects)
+#     data = serializers.serialize('json', objects, cls=DjangoJSONEncoder)
+    
+#     print('DATAAAAAAAAAAAAAAAAAAAAA     = = = = = ', data)
+
+#     return HttpResponse(data, content_type='application/json')
+
+def getCategories(request, version_id):
+    
+    objects = Category.objects.order_by('id')
     data = serializers.serialize('json', objects)
 
     print('OBJECCCCCTSSSSSSSSSSSSS     = = = = = ', objects)
@@ -36,16 +62,24 @@ def getArticles(request, version_id):
 
     return HttpResponse(data, content_type='application/json')
 
+@api_view(['GET'])
+def getArticle(request, version_id, id):
+    article = get_object_or_404(Article, pk=id)
+    
+    # Article.objects.filter(source_id=3).first()
+    serializer = serializers.ArticleSerializer(article)
 
-def get_article_by_id(request, version_id, id):
+    return Response(serializer.data)
 
-    objects = Article.objects.get(pk=id)
-    data = serializers.serialize('json', [objects])
+# def get_article_by_id(request, version_id, id):
 
-    print('OBJ     = = = = = ', objects)
-    print('DAT     = = = = = ', data)
+#     objects = Article.objects.get(pk=id)
+#     data = serializers.serialize('json', [objects])
 
-    return HttpResponse(data, content_type='application/json')
+#     print('OBJ     = = = = = ', objects)
+#     print('DAT     = = = = = ', data)
+
+#     return HttpResponse(data, content_type='application/json')
 
 def get_article_by_category(request, version_id, id):
     categoryArticles = Article.objects.filter(category=id)
@@ -53,3 +87,12 @@ def get_article_by_category(request, version_id, id):
     data = serializers.serialize('json', categoryArticles)
 
     return HttpResponse(data, content_type='application/json')
+
+@api_view(['GET'])
+def get_images_by_article(request, version_id, article_id):
+    images = Image.objects.filter(article_id = article_id)
+    
+    # Article.objects.filter(source_id=3).first()
+    serializer = serializers.ImageSerializer(images, many=True)
+
+    return Response(serializer.data)
