@@ -35,7 +35,7 @@ def version(request, version_id):
 @api_view(['GET'])
 def getArticles(request, version_id):
     print('fffffffffffffffffffffffffffff')
-    serializer = serializers.ArticleSerializer(Article.objects.all()[:10], many=True)
+    serializer = serializers.ArticleSerializer(Article.objects.all()[:100], many=True)
     
     return Response(serializer.data)
 

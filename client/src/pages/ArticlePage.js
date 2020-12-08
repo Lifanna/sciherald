@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -17,8 +17,10 @@ import { featuredPosts } from "../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { articleLoadRequestAction } from "../store/articleList";
 import { CircularProgress } from "@material-ui/core";
+import HTMLReactParser from "html-react-parser";
+import { getImagesById } from "../services/api-service";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "100%",
     marginBottom: "1rem",
@@ -46,17 +48,38 @@ export const ArticlePage = () => {
   const { id } = useParams();
   const classes = useStyles();
 
-  const { currentArticle: article, error, isLoading } = useSelector(state => ({
-    currentArticle: state.articleList.currentArticle,
-    error: state.articleList.errors.currentArticle,
-    isLoading: state.articleList.loadings.currentArticle,
-  }));
+  const { currentArticle: article, error, isLoading } = useSelector(
+    (state) => ({
+      currentArticle: state.articleList.currentArticle,
+      error: state.articleList.errors.currentArticle,
+      isLoading: state.articleList.loadings.currentArticle,
+    })
+  );
+
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const images = await getImagesById(id);
+        const imgs = images.map((img) => img.original_path);
+        setImages(imgs);
+      } catch (error) {}
+    })();
+  }, [id]);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(articleLoadRequestAction(id));
   }, [dispatch, articleLoadRequestAction, id]);
+
   const circular = isLoading && <CircularProgress size={100} />;
+
+  const imagesJSX =
+    images.length &&
+    images.map((i) => <img style={{ maxWidth: "100%" }} src={i} />);
+
   const articlesJSX = !isLoading && !error && (
     <Card className={classes.root}>
       <CardHeader
@@ -70,17 +93,13 @@ export const ArticlePage = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={article && article.title}
+        title={article && article.name}
         subheader="September 14, 2016"
       />
-      <CardMedia
-        className={classes.media}
-        image="./google1592906914390.jpg"
-        title="Paella dish"
-      />
       <CardContent>
+        {imagesJSX || null}
         <Typography variant="body2" color="textSecondary" component="p">
-          {article && article.body}
+          {article && HTMLReactParser(article.content)}
         </Typography>
       </CardContent>
 

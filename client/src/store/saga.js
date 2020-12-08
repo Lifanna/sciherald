@@ -15,8 +15,6 @@ export function* fetchArticlesSaga() {
   yield put(articlesRequestAction());
   try {
     const articles = yield call(getArticles);
-
-    articles.forEach(item => (item.title = item.title.toUpperCase()));
     yield put(articlesLoadAction(articles));
   } catch (error) {
     yield put(articlesErrorAction({ type: "articles" }));

@@ -2,9 +2,10 @@ import { CircularProgress, Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Article } from "../components/Article";
+import parser from "html-react-parser";
 
 export const HomePage = () => {
-  const { articles, error, isLoading } = useSelector(state => ({
+  const { articles, error, isLoading } = useSelector((state) => ({
     articles: state.articleList.articles,
     error: state.articleList.errors.articles,
     isLoading: state.articleList.loadings.articles,
@@ -17,9 +18,9 @@ export const HomePage = () => {
       return (
         <Article
           id={post.id}
-          title={post.title}
-          description={post.body.slice(0, 100)}
-          key={post.title}
+          title={post.name}
+          description={parser(post.content.slice(0, 100))}
+          key={post.name}
         />
       );
     });

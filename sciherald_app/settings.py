@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sciherald.apps.sciherald_app',
+    'sciherald_app',
     'rest_framework',
     'api',
 ]

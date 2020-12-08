@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 const sections = ["Недавние публикаций", "Топ статей", "Топ тематик"];
 
 export const Sidebar = () => {
-  const { articles, error, isLoading } = useSelector(state => ({
+  const { articles, error, isLoading } = useSelector((state) => ({
     articles: state.articleList.articles,
     error: state.articleList.errors.articles,
     isLoading: state.articleList.loadings.articles,
@@ -62,10 +62,10 @@ const SideBarSection = ({ title, items, isLoading }) => {
       }}
     >
       {title}
-      {items.map(item => {
+      {items.map((item) => {
         return (
           <Button key={item.id} component={NavLink} to={`/articles/${item.id}`}>
-            {item.title.slice(0, 15)}
+            {item.name.slice(0, 15)}
           </Button>
         );
       })}
