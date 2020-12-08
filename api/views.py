@@ -1,11 +1,18 @@
 from django.http import JsonResponse, HttpResponse
 from django.http import Http404
 from django.shortcuts import render
-from api.models import Article
+from api.models import Article, Category, Image
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 import datetime
 import json
+
+from rest_framework import generics
+
+from . import serializers
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 def index(request):
     info = {
@@ -24,76 +31,45 @@ def version(request, version_id):
         'info': 'version of api is v1'
     })
 
+
+@api_view(['GET'])
 def getArticles(request, version_id):
-    if version_id != 1:
-        raise Http404('Unknown version of api')
+    print('fffffffffffffffffffffffffffff')
+    serializer = serializers.ArticleSerializer(Article.objects.all()[:10], many=True)
+    
+    return Response(serializer.data)
 
-    q1 = Article(
-        id = 1,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q1.save()
 
-    q2 = Article(
-        id = 2,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q2.save()
+@api_view(['GET'])
+def getCategories(request, version_id):
+    serializer = serializers.CategorySerializer(Category.objects.all(), many=True)
+    
+    return Response(serializer.data)
+    
 
-    q3 = Article(
-        id = 3,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q3.save()
+@api_view(['GET'])
+def getArticle(request, version_id, id):
+    article = get_object_or_404(Article, pk=id)
+    
+    # Article.objects.filter(source_id=3).first()
+    serializer = serializers.ArticleSerializer(article)
 
-    q4 = Article(
-        id = 4,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q4.save()
+    return Response(serializer.data)
 
-    q5 = Article(
-        id = 5,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q5.save()
+@api_view(["GET"])
+def get_article_by_category(request, version_id, category_id):
+    article = Article.objects.filter(category = category_id)[:10]
+    print('FFFFFFFFFFFFFFFFFFFFFFFFFFFUCK')
+    # Article.objects.filter(source_id=3).first()
+    serializer = serializers.ArticleSerializer(article, many = True)
 
-    q6 = Article(
-        id = 6,
-        title = 'Здесь будет название статьи',
-        content = 'Здесь будет очень длинный контент, который мы будем парсить с сайтов!',
-        author = 'Фамилия Имя Отчество',
-        publication_date = datetime.datetime(2020, 10, 12),
-        category = 'Здесь будет категория статьи',
-        referer_url = 'http://habr.com/all'
-    )
-    q6.save()
+    return Response(serializer.data)
 
-    data = json.dumps(list(Article.objects.values()), ensure_ascii=False, cls=DjangoJSONEncoder)
+@api_view(['GET'])
+def get_images_by_article(request, version_id, article_id):
+    images = Image.objects.filter(article_id = article_id)
+    
+    # Article.objects.filter(source_id=3).first()
+    serializer = serializers.ImageSerializer(images, many=True)
 
-    return HttpResponse(data, content_type='application/json')
+    return Response(serializer.data)
